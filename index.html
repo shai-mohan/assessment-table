@@ -48,7 +48,7 @@
   <script>
     async function fetchData() {
       try {
-        const response = await fetch('./table_input.csv');
+        const response = await fetch('./Table_Input.csv');
         if (!response.ok) throw new Error('Network response was not ok');
         const csvText = await response.text();
         const tableData = parseCSV(csvText);
