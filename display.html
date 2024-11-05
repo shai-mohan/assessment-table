@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mulah Assessment</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+  <div class="container my-5">
+    <h2 class="text-center text-primary mb-4">Assessment - Mulah</h2>
+
+    <section>
+      <h3 class="text-center text-secondary mb-4">Table 1: CSV Data</h3>
+      <div class="table-responsive text-center">
+        <table id="table1" class="table table-bordered table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th>Index #</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mt-5">
+      <h3 class="text-center text-secondary mb-4">Table 2: Data Calculation</h3>
+      <div class="table-responsive text-center">
+        <table id="table2" class="table table-bordered table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th>Category</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="csvParser.js"></script>
+  <script>
+    async function fetchData() {
+      try {
+        const response = await fetch('./table_input.csv');
+        if (!response.ok) throw new Error('Network response was not ok');
+        const csvText = await response.text();
+        const tableData = parseCSV(csvText);
+        
+        displayTable1(tableData);
+        displayTable2(tableData);
+      } catch (error) {
+        console.error("Error loading the CSV file:", error);
+        alert("An error occurred while loading the data. Please try again later.");
+      }
+    }
+
+    function displayTable1(tableData) {
+      const table1Body = document.getElementById("table1").querySelector("tbody");
+
+      tableData.forEach(row => {
+        const tr = document.createElement("tr");
+        const tdIndex = document.createElement("td");
+        tdIndex.textContent = row["Index #"];
+        const tdValue = document.createElement("td");
+        tdValue.textContent = row["Value"];
+
+        tr.appendChild(tdIndex);
+        tr.appendChild(tdValue);
+        table1Body.appendChild(tr);
+      });
+    }
+
+    function displayTable2(tableData) {
+      const table2Body = document.getElementById("table2").querySelector("tbody");
+
+      const values = {
+        A5: parseInt(tableData.find(row => row["Index #"] === "A5").Value),
+        A20: parseInt(tableData.find(row => row["Index #"] === "A20").Value),
+        A15: parseInt(tableData.find(row => row["Index #"] === "A15").Value),
+        A7: parseInt(tableData.find(row => row["Index #"] === "A7").Value),
+        A13: parseInt(tableData.find(row => row["Index #"] === "A13").Value),
+        A12: parseInt(tableData.find(row => row["Index #"] === "A12").Value)
+      };
+
+      const results = [
+        { category: "Alpha", value: values.A5 + values.A20 },
+        { category: "Beta", value: Math.floor(values.A15 / values.A7) },
+        { category: "Charlie", value: values.A13 * values.A12 }
+      ];
+
+      results.forEach(row => {
+        const tr = document.createElement("tr");
+        const tdCategory = document.createElement("td");
+        tdCategory.textContent = row.category;
+        const tdValue = document.createElement("td");
+        tdValue.textContent = row.value;
+
+        tr.appendChild(tdCategory);
+        tr.appendChild(tdValue);
+        table2Body.appendChild(tr);
+      });
+    }
+
+    fetchData();
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
